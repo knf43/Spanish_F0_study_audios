@@ -1,0 +1,74 @@
+================ APA-STYLE GAMM RESULTS ================
+Study: Spanish stress/tense contrast (present/paroxytone 'a' vs past/oxytone 'b')
+Analysis: GAMM contour models over a per-syllable time index (0-5;
+  Art=0-1, N-s1=1-2, N-s2=2-3, V-s1=3-4, V-s2=4-5), 2-syllable nouns.
+N participants = 5; N items kept = 90 of 90.
+
+--- Model specification (both measures) ---
+Fitted with mgcv::bam(), fREML, discretised covariates. Each model: an
+ordered-factor parametric term (condition) + a reference smooth s(time) +
+an ordered-factor difference smooth s(time, by=conditionO), plus by-item
+random intercepts and by-participant random REFERENCE and DIFFERENCE
+factor smooths (Soskuthy 2021, within-item recommendation). An AR(1)
+error model corrected residual autocorrelation.
+  F0 model:        family = scat, factor-smooth basis = cr, AR(1) rho = -0.038
+  Intensity model: family = gaussian, factor-smooth basis = cr, AR(1) rho = 0.394
+
+--- Basis selection (lower AIC = better) ---
+F0:
+ basis      AIC     dAIC
+    cr 270213.7  0.00000
+    tp 270234.6 20.92865
+Intensity:
+ basis      AIC     dAIC
+    cr 545319.7 0.000000
+    tp 545321.2 1.468903
+
+--- Results, side by side (Soskuthy split vs combined test) ---
+
+### F0 (semitones)
+  - Height difference (parametric: past - present): b = -0.23, SE = 0.05, t value = -4.36, p < .001
+  - Shape difference (smooth: present vs past contour): F(8.00, 9.38) = 3.46, p < .001
+  - Combined difference (binary smooth: any present-vs-past diff): F(9.00, 10.38) = 4.98, p < .001
+  Note: for a single 'any difference?' claim, use the combined binary-
+  smooth test (p < .001) or Bonferroni-correct the two split tests at alpha = .025
+  (split tests remain significant under Bonferroni).
+
+### Intensity (dB)
+  - Height difference (parametric: past - present): b = -0.20, SE = 0.08, t value = -2.58, p = .010
+  - Shape difference (smooth: present vs past contour): F(12.69, 15.74) = 5.26, p < .001
+  - Combined difference (binary smooth: any present-vs-past diff): F(13.69, 16.74) = 5.05, p < .001
+  Note: for a single 'any difference?' claim, use the combined binary-
+  smooth test (p < .001) or Bonferroni-correct the two split tests at alpha = .025
+  (split tests remain significant under Bonferroni).
+
+--- Illustrative difference windows (visual; NOT a standalone test) ---
+Soskuthy (2021) Set 4: pointwise 'CI excludes zero' regions are for
+illustration only; significance claims rest on the tests above.
+  F0 difference curve excluded zero across: V-s1 (72%) to V-s2 (24%) on the syllable axis (mean difference 0.72 st)
+  Intensity difference curve excluded zero across: V-s1 (50%) to V-s2 (27%) on the syllable axis (mean difference 1.16 dB)
+
+--- Ready-to-adapt METHODS paragraph ---
+F0 and intensity contours were analysed with generalized additive mixed
+models (GAMMs) using the mgcv package (Wood, 2017) in R, following the
+strategies evaluated by Soskuthy (2021) and Wieling (2018). Each contour
+measure was modelled over a per-syllable normalised time index (each
+syllable mapped to one unit so boundaries align across tokens) with a
+reference smooth and an
+ordered-factor difference smooth contrasting the present/paroxytone and
+past/oxytone conditions. The random-effects structure comprised by-item
+random intercepts and by-participant random reference and difference
+factor smooths (penalised thin-plate/cubic-regression bases, m = 1),
+which capture participant-specific contour shapes and participant-specific
+realisations of the condition contrast. Residual autocorrelation was
+addressed with a first-order autoregressive (AR1) error model, with rho
+set to the lag-1 residual autocorrelation of an otherwise identical model.
+Models were estimated with fast restricted maximum likelihood (fREML) and
+discretised covariates. The factor-smooth basis (thin-plate vs cubic
+regression) was selected by AIC. Heavy-tailed F0 residuals were
+accommodated with a scaled-t family. The presence of a condition
+difference was tested both via a combined binary difference smooth and via
+separate tests of the parametric (height) and smooth (shape) difference
+terms; for the latter, a Bonferroni-corrected alpha of .025 was used.
+
+================ END ================

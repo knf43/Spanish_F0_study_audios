@@ -1,0 +1,7 @@
+measure,term,estimate,se,stat,stat_name,edf,ref_df,p,p_apa
+F0 (semitones),Height difference (parametric: past - present),-0.2258329023597853,0.05180601678145531,-4.359202200633679,t value,NA,NA,1.307137532750039e-5,< .001
+F0 (semitones),Shape difference (smooth: present vs past contour),NA,NA,3.461831851985898,F,8.000318125772452,9.381307818719682,2.4116942022489596e-4,< .001
+F0 (semitones),Combined difference (binary smooth: any present-vs-past diff),NA,NA,4.9769723388200795,F,9.000374453264445,10.381373156256036,5.1521193501491425e-6,< .001
+Intensity (dB),Height difference (parametric: past - present),-0.19559033688792968,0.07569575150292503,-2.583901117361543,t value,NA,NA,0.009770556091770962,= .010
+Intensity (dB),Shape difference (smooth: present vs past contour),NA,NA,5.26113058474592,F,12.685618166284257,15.744484684385643,0,< .001
+Intensity (dB),Combined difference (binary smooth: any present-vs-past diff),NA,NA,5.054161788333648,F,13.685618459901162,16.74448505468729,0,< .001

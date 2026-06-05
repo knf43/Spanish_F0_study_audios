@@ -1,0 +1,290 @@
+---
+title: "Spanish Stress/Tense F0 Study — Model Specifications & Results"
+subtitle: "First-three-words acoustic analysis (article / noun / verb); present–paroxytone vs past–oxytone"
+author: "Kaylee Fernandez"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    theme: readable
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE, message = FALSE, warning = FALSE)
+```
+
+# Overview
+
+This document records every statistical model fit in the analysis, with its
+**dependent variable**, **independent (fixed) variables**, **random
+intercepts/slopes**, and **result**. Two families of model were run:
+
+1. **Whole-utterance contour GAMMs** (F0, intensity) over a per-syllable time
+   index spanning Article → Noun → Verb (`analyze_3words_F0.R`).
+2. **N-s2 windowed tests** isolating the noun's second syllable, asking whether
+   it carries an *anticipatory* cue to the upcoming verb's stress
+   (`test_Ns2_cues.R`).
+
+Design constants throughout:
+
+| Element | Value |
+|---|---|
+| Participants | 5 (each produced both conditions) |
+| Items | 90 two-syllable-noun items (90 of 90 kept) |
+| Condition `a` | Present tense → **paroxytone** (penult stress, e.g. BUS-ca) |
+| Condition `b` | Past tense → **oxytone** (final stress, e.g. bus-CO) |
+| Sampling | 10 points per syllable; 5 syllables (Art, N-s1, N-s2, V-s1, V-s2) |
+| Rows extracted | 90,000 total; 74,070 voiced (82.3%) for F0 |
+| Effect direction | All "b − a" = past − present |
+
+> **Sample-size caveat.** With 5 participants the by-participant random-smooth
+> structure is at the minimum the design supports. Results are reported as
+> inferential (the script did **not** enter pilot/descriptive mode), but the
+> participant-level estimates are thinly supported and should be interpreted
+> with that in mind.
+
+---
+
+# Part 1 — Whole-utterance contour GAMMs
+
+Both contour models share the same specification, fit with
+`mgcv::bam(method = "fREML", discrete = TRUE)`, following Wieling (2018) and
+Sóskuthy (2021). The contrast is carried by an **ordered factor** `conditionO`
+(present = reference), giving a parametric **height** term and a smooth
+**shape** (difference-smooth) term. A companion **binary-smooth** model
+provides a single combined "any difference" test. An AR(1) error model
+corrected residual autocorrelation; the factor-smooth basis (tp vs cr) was
+chosen by AIC.
+
+## Common structure
+
+| Component | Specification |
+|---|---|
+| **Independent (fixed)** | `conditionO` (ordered: present vs past) |
+| **Reference smooth** | `s(time_bin, k = 25)` — population contour |
+| **Difference smooth** | `s(time_bin, by = conditionO, k = 25)` — shape difference |
+| **Random intercept (item)** | `s(item_id, bs = "re")` |
+| **Random reference smooth (participant)** | `s(time_bin, participant, bs = "fs", m = 1)` |
+| **Random difference smooth (participant)** | `s(time_bin, participant, by = conditionO, bs = "fs", m = 1)` |
+| **Time axis** | per-syllable index 0–5 (Art 0–1, N-s1 1–2, N-s2 2–3, V-s1 3–4, V-s2 4–5) |
+
+The by-participant **reference + difference** factor smooths implement
+Sóskuthy's (2021) within-item recommendation: the difference smooth shrinks the
+by-participant contrast (analogous to `(1 + condition | participant)`),
+restoring power while keeping Type I error nominal.
+
+```{r model-formula-contour}
+# Schematic (same for both measures; yvar = "f0_st" or "intensity_db")
+yvar ~ conditionO +
+  s(time_bin, k = 25) +
+  s(time_bin, by = conditionO, k = 25) +
+  s(item_id, bs = "re") +
+  s(time_bin, participant, bs = "fs", m = 1, xt = <basis>, k = 25) +
+  s(time_bin, participant, by = conditionO, bs = "fs", m = 1, xt = <basis>, k = 25)
+```
+
+## Model 1 — F0 contour
+
+| Field | Value |
+|---|---|
+| **Dependent variable** | F0 in semitones re 100 Hz (`f0_st`) |
+| **Family** | Scaled-t (`scat`; df = 3, σ = 0.953) — heavy-tail robust |
+| **Factor-smooth basis** | cr (selected by AIC; cr 270213.7 vs tp 270234.6) |
+| **AR(1) rho** | −0.038 |
+| **N** | 74,070 (voiced points) |
+| **Fit** | R²(adj) = 0.778; deviance explained = 74% |
+
+**Results (summary of smooth/parametric terms):**
+
+| Term | Estimate / F | edf | p |
+|---|---|---|---|
+| Intercept | 10.15 st | — | < .001 |
+| `conditionOb` (height: past − present) | **−0.23 st**, SE 0.05, t = −4.36 | — | **< .001** |
+| `s(time_bin)` (reference contour) | F = 2.48 | 17.20 | < .001 |
+| `s(time_bin):conditionOb` (shape diff.) | F = 3.46 | 8.00 | **< .001** |
+| `s(item_id)` (item RE) | F = 20.29 | 84.84 | < .001 |
+| `s(time_bin,participant)` (ref. fs) | F = 4761.83 | 96.93 | < .001 |
+| `s(time_bin,participant):conditionOb` (diff. fs) | F = 17.43 | 73.32 | < .001 |
+| **Combined (binary smooth)** | F = 4.98 | 9.00 | **< .001** |
+
+- **Significant present/past F0 difference** in both height and shape; survives
+  Bonferroni (.025) on the split tests.
+- Difference is **localized to the verb**: the pointwise CI excluded zero across
+  **V-s1 (72%) → V-s2 (24%)**, mean Δ = 0.72 st. Article and noun regions: no
+  difference.
+- *k* diagnostics clean (edf well below k′; k-index p > .15 for all smooths).
+
+## Model 2 — Intensity contour
+
+| Field | Value |
+|---|---|
+| **Dependent variable** | Intensity in dB (`intensity_db`) |
+| **Family** | Gaussian |
+| **Factor-smooth basis** | cr (AIC: cr 545319.7 vs tp 545321.2) |
+| **AR(1) rho** | 0.394 |
+| **N** | 89,319 |
+| **Fit** | R²(adj) = 0.449; deviance explained = 45% |
+
+**Results:**
+
+| Term | Estimate / F | edf | p |
+|---|---|---|---|
+| Intercept | 56.48 dB | — | < .001 |
+| `conditionOb` (height: past − present) | **−0.20 dB**, SE 0.08, t = −2.58 | — | **.010** |
+| `s(time_bin)` (reference contour) | F = 53.17 | 23.54 | < .001 |
+| `s(time_bin):conditionOb` (shape diff.) | F = 5.26 | 12.69 | **< .001** |
+| `s(item_id)` (item RE) | F = 26.59 | 85.81 | < .001 |
+| `s(time_bin,participant)` (ref. fs) | F = 23.61 | 78.41 | < .001 |
+| `s(time_bin,participant):conditionOb` (diff. fs) | F = 0.20 | 11.91 | .005 |
+| **Combined (binary smooth)** | F = 5.05 | 13.69 | **< .001** |
+
+- **Significant present/past intensity difference** in height and shape.
+- Difference window: **V-s1 (50%) → V-s2 (27%)**, mean Δ = 1.16 dB — again
+  verb-localized.
+- ⚠ **k flag:** `s(time_bin)` reference smooth had edf 23.5 / k′ 24 (k-index
+  0.97, p = .04). The reference smooth is near its basis ceiling. *Recommended
+  robustness check: refit with `k = 35` and confirm the difference smooth and
+  its p-value are stable.*
+
+---
+
+# Part 2 — N-s2 windowed tests (anticipatory cue)
+
+These isolate the **noun's second syllable (N-s2)** and ask whether it
+distinguishes the upcoming verb's stress *before the verb begins*. Duration,
+intensity, and mean F0 were tested with linear mixed-effects models
+(`lme4`/`lmerTest`); F0 contour shape with a GAMM difference smooth restricted
+to N-s2 points. N-s2 tokens = 1,800 (900 present, 900 past).
+
+## Common LMM structure (duration, intensity, mean F0)
+
+| Component | Specification |
+|---|---|
+| **Independent (fixed)** | `condition` (present vs past) |
+| **Random intercept** | `(1 | participant)`, `(1 | item_id)` |
+| **Random slope** | `(condition | participant)` — *attempted* |
+| **Estimation** | REML, `bobyqa`; auto-fallback to intercepts-only if singular |
+
+```{r model-formula-lmm}
+# Maximal (attempted):
+dv ~ condition + (1 + condition | participant) + (1 | item_id)
+# Fallback if singular:
+dv ~ condition + (1 | participant) + (1 | item_id)
+```
+
+## Model 3 — N-s2 Duration (LMM)
+
+| Field | Value |
+|---|---|
+| **Dependent variable** | N-s2 duration (ms) |
+| **Fixed** | `condition` |
+| **Random structure used** | **Intercepts-only** — maximal model was singular |
+| **Result** | b (past − present) = **−9.51 ms**, SE 1.35, t = **−7.02**, **p < .0001** |
+
+→ **Robust anticipatory cue.** N-s2 is reliably ~9.5 ms *shorter* before an
+oxytone (past) verb. Survives Bonferroni comfortably. *(Present 157 ms vs past
+148 ms descriptively.)*
+
+## Model 4 — N-s2 Intensity (LMM)
+
+| Field | Value |
+|---|---|
+| **Dependent variable** | N-s2 mean intensity (dB) |
+| **Fixed** | `condition` |
+| **Random structure used** | Intercepts-only (maximal singular) |
+| **Result** | b = +0.02 dB, SE 0.14, t = 0.13, p = .898 |
+
+→ **Null.** No anticipatory intensity cue.
+
+## Model 5 — N-s2 Mean F0 / height (LMM)
+
+| Field | Value |
+|---|---|
+| **Dependent variable** | N-s2 mean F0 (semitones) |
+| **Fixed** | `condition` |
+| **Random structure used** | **Maximal** `(1 + condition | participant) + (1 | item_id)` (converged) |
+| **Result** | b = +0.21 st, SE 0.21, t = 0.99, p = .378 |
+
+→ **Null** for mean F0 (height). *(Note: this is the one N-s2 model where the
+full random-slope structure held.)*
+
+## Model 6 — N-s2 F0 contour shape (GAMM)
+
+Tests whether the F0 *trajectory through* N-s2 differs by condition even when
+the mean does not. Time axis = within-syllable progress (0 → 1).
+
+| Component | Specification |
+|---|---|
+| **Dependent variable** | `f0_st` (voiced N-s2 points) |
+| **Independent (fixed)** | `conditionO` (ordered) + `s(t, k = 8)` reference + `s(t, by = conditionO, k = 8)` difference |
+| **Random intercept (item)** | `s(item_id, bs = "re")` |
+| **Random reference smooth (participant)** | `s(t, participant, bs = "fs", m = 1, k = 8)` |
+| **Random difference smooth (participant)** | `s(t, participant, by = conditionO, bs = "fs", m = 1, k = 8)` |
+
+```{r model-formula-ns2shape}
+f0_st ~ conditionO +
+  s(t, k = 8) +
+  s(t, by = conditionO, k = 8) +
+  s(item_id, bs = "re") +
+  s(t, participant, bs = "fs", m = 1, k = 8) +
+  s(t, participant, by = conditionO, bs = "fs", m = 1, k = 8)
+```
+
+**Results:**
+
+| Term | Estimate / F | edf | p |
+|---|---|---|---|
+| Shape difference `s(t):conditionOb` | F = **6.41** | 1.00 | **.011** |
+| Height offset `conditionOb` (parametric) | +0.19 st | — | .343 |
+
+→ **Marginal / suggestive.** The within-syllable F0 *tilt* differs by condition
+(edf ≈ 1 → near-linear), although mean F0 does not. At p = .011 it just clears
+α = .05 but is **borderline under Bonferroni** (.0125 for 4 tests) and visually
+the predicted contours overlap heavily. *Recommended: refit with `k = 10` to
+confirm robustness; report as suggestive, not confirmatory.*
+
+---
+
+# N-s2 summary table
+
+| Cue | Effect (past − present) | Statistic | p | Bonferroni (α ≈ .0125) |
+|---|---|---|---|---|
+| **Duration** | **−9.51 ms** | t = −7.02 | **< .001** | ✅ survives |
+| Intensity | +0.02 dB | t = 0.13 | .898 | — null |
+| F0 mean (height) | +0.21 st | t = 0.99 | .378 | — null |
+| F0 shape (tilt) | (shape) | F = 6.41 | .011 | ⚠ marginal |
+
+**Take-away.** The noun's final syllable carries a **robust durational**
+anticipatory cue to the upcoming verb's stress, plus a **subtle (marginal) F0
+contour-tilt** cue; there is **no** anticipatory cue in intensity or in mean F0.
+Because mean F0 is null while shape is (marginally) significant, the contour
+approach is doing work a syllable-mean analysis would miss — a methodological
+point in favour of the GAMM, even if the substantive F0 claim stays cautious.
+
+---
+
+# Variable glossary
+
+| Variable | Role | Levels / unit |
+|---|---|---|
+| `f0_st` | DV | F0, semitones re 100 Hz |
+| `intensity_db` | DV | Intensity, dB |
+| `syll_dur_ms` / `dur_ms` | DV | Syllable duration, ms |
+| `condition` / `conditionO` | Fixed IV | a = present/paroxytone; b = past/oxytone |
+| `time_bin` | Smooth covariate | per-syllable index 0–5 (whole-utterance models) |
+| `t` (`within_syll`) | Smooth covariate | within-syllable progress 0–1 (N-s2 shape model) |
+| `participant` | Random grouping | 5 speakers |
+| `item_id` | Random grouping | 90 items |
+
+# Reproducibility notes
+
+- Pipeline: `align_cut_audios.py --all` (MFA → 4-tier TextGrids) →
+  `extract_f0_3words.praat` (90,000-row table) → `analyze_3words_F0.R`
+  (Models 1–2) → `test_Ns2_cues.R` (Models 3–6).
+- Outputs: `plots/`, `tables/` (incl. `APA_results.txt`,
+  `Ns2_test_results.csv`), `models/f0_intensity_models.RData`.
+- Two flagged robustness checks: (i) intensity Model 2 with `k = 35`;
+  (ii) N-s2 shape Model 6 with `k = 10`.
+- All models estimated in R with `mgcv` (GAMMs) and `lme4`/`lmerTest` (LMMs).

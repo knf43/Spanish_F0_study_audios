@@ -1,0 +1,21 @@
+================ N-s2 ANTICIPATION: APA-STYLE RESULTS ================
+
+Analyses restricted to the noun's second syllable (N-s2), 1800 tokens
+(900 present/paroxytone, 900 past/oxytone). Duration, intensity, and mean
+F0 were each modelled with linear mixed-effects models (condition fixed;
+by-participant and by-item random effects); F0 contour shape was tested with
+an ordered-factor GAMM difference smooth over within-syllable time.
+
+Duration. N-s2 was reliably shorter in the past/oxytone condition,
+  b = -9.51 ms, SE = 1.35, t = -7.02, p < .001.
+Intensity. No condition difference, b = +0.02 dB, p = .898.
+F0 height. No difference in mean F0, b = +0.21 st, p = .378.
+F0 shape. The within-syllable F0 trajectory differed by condition,
+  F(1.00) = 6.41, p = .011 (edf ~ 1, i.e. a near-linear tilt difference).
+
+With 4 tests, a Bonferroni threshold of alpha = 0.0125 was applied:
+the duration effect survives comfortably; the F0-shape effect is marginal
+(p just above the corrected threshold) and is reported as suggestive. No
+anticipatory cue was found in intensity or in mean F0.
+
+================ END ================

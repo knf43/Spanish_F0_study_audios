@@ -1,0 +1,5 @@
+"cue","unit","estimate_b_minus_a","SE","t","df","p","test","structure","p_apa","sig_bonferroni"
+"Duration","ms",-9.51111111111115,1.35486411501767,-7.01997418463407,1705.00000608822,3.19181968215285e-12,"LMM (b - a)","intercepts-only (max model was singular)","< .001","yes"
+"Intensity","dB",0.0175488888890767,0.137139005529699,0.127964241984212,1704.99999635961,0.898192361835442,"LMM (b - a)","intercepts-only (max model was singular)","= .898","no"
+"F0 mean (height)","st",0.209710035582105,0.211880765092816,0.989754947742615,4.00100275880669,0.378308923979493,"LMM (b - a)","maximal (1+condition|participant) + (1|item_id)","= .378","no"
+"F0 contour shape","st",NA,NA,6.40656683250418,1.00014420878571,0.0113720900012787,"GAMM diff. smooth (F)","by-participant ref+diff fs","= .011","yes"

@@ -1,0 +1,168 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0 
+xmax = 1.497875 
+tiers? <exists> 
+size = 4 
+item []: 
+    item [1]:
+        class = "IntervalTier" 
+        name = "sentence" 
+        xmin = 0 
+        xmax = 1.497875 
+        intervals: size = 1 
+        intervals [1]:
+            xmin = 0 
+            xmax = 1.497875 
+            text = "la doña gastó el dinero" 
+    item [2]:
+        class = "IntervalTier" 
+        name = "words" 
+        xmin = 0 
+        xmax = 1.497875 
+        intervals: size = 5 
+        intervals [1]:
+            xmin = 0 
+            xmax = 0.19 
+            text = "la" 
+        intervals [2]:
+            xmin = 0.19 
+            xmax = 0.52 
+            text = "doña" 
+        intervals [3]:
+            xmin = 0.52 
+            xmax = 0.89 
+            text = "gastó" 
+        intervals [4]:
+            xmin = 0.89 
+            xmax = 1.05 
+            text = "el" 
+        intervals [5]:
+            xmin = 1.05 
+            xmax = 1.497875 
+            text = "dinero" 
+    item [3]:
+        class = "IntervalTier" 
+        name = "syllables" 
+        xmin = 0 
+        xmax = 1.497875 
+        intervals: size = 9 
+        intervals [1]:
+            xmin = 0 
+            xmax = 0.19 
+            text = "la" 
+        intervals [2]:
+            xmin = 0.19 
+            xmax = 0.3 
+            text = "d̪o" 
+        intervals [3]:
+            xmin = 0.3 
+            xmax = 0.52 
+            text = "ɲa" 
+        intervals [4]:
+            xmin = 0.52 
+            xmax = 0.78 
+            text = "ɡas" 
+        intervals [5]:
+            xmin = 0.78 
+            xmax = 0.89 
+            text = "t̪o" 
+        intervals [6]:
+            xmin = 0.89 
+            xmax = 1.05 
+            text = "el" 
+        intervals [7]:
+            xmin = 1.05 
+            xmax = 1.13 
+            text = "d̪i" 
+        intervals [8]:
+            xmin = 1.13 
+            xmax = 1.4 
+            text = "ne" 
+        intervals [9]:
+            xmin = 1.4 
+            xmax = 1.497875 
+            text = "ɾo" 
+    item [4]:
+        class = "IntervalTier" 
+        name = "phones" 
+        xmin = 0 
+        xmax = 1.497875 
+        intervals: size = 19 
+        intervals [1]:
+            xmin = 0 
+            xmax = 0.1 
+            text = "l" 
+        intervals [2]:
+            xmin = 0.1 
+            xmax = 0.19 
+            text = "a" 
+        intervals [3]:
+            xmin = 0.19 
+            xmax = 0.23 
+            text = "d̪" 
+        intervals [4]:
+            xmin = 0.23 
+            xmax = 0.3 
+            text = "o" 
+        intervals [5]:
+            xmin = 0.3 
+            xmax = 0.45 
+            text = "ɲ" 
+        intervals [6]:
+            xmin = 0.45 
+            xmax = 0.52 
+            text = "a" 
+        intervals [7]:
+            xmin = 0.52 
+            xmax = 0.58 
+            text = "ɡ" 
+        intervals [8]:
+            xmin = 0.58 
+            xmax = 0.66 
+            text = "a" 
+        intervals [9]:
+            xmin = 0.66 
+            xmax = 0.78 
+            text = "s" 
+        intervals [10]:
+            xmin = 0.78 
+            xmax = 0.86 
+            text = "t̪" 
+        intervals [11]:
+            xmin = 0.86 
+            xmax = 0.89 
+            text = "o" 
+        intervals [12]:
+            xmin = 0.89 
+            xmax = 0.95 
+            text = "e" 
+        intervals [13]:
+            xmin = 0.95 
+            xmax = 1.05 
+            text = "l" 
+        intervals [14]:
+            xmin = 1.05 
+            xmax = 1.09 
+            text = "d̪" 
+        intervals [15]:
+            xmin = 1.09 
+            xmax = 1.13 
+            text = "i" 
+        intervals [16]:
+            xmin = 1.13 
+            xmax = 1.26 
+            text = "n" 
+        intervals [17]:
+            xmin = 1.26 
+            xmax = 1.4 
+            text = "e" 
+        intervals [18]:
+            xmin = 1.4 
+            xmax = 1.46 
+            text = "ɾ" 
+        intervals [19]:
+            xmin = 1.46 
+            xmax = 1.497875 
+            text = "o" 
