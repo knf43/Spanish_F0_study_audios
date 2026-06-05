@@ -100,6 +100,10 @@ if (length(parts)) {
 }
 ```
 
+```{r f0-fig, fig.cap="F0 contour (A) and present−past difference (B)."}
+print(fig_f0)
+```
+
 ## Intensity
 
 ```{r int-text, results='asis'}
@@ -121,10 +125,6 @@ if (length(parts)) {
 
 ```{r intensity-fig, fig.cap="Intensity contour (A) and present−past difference (B). Red points mark the region where the 95% CI excludes zero."}
 print(fig_int)
-```
-
-```{r f0-fig, fig.cap="F0 contour (A) and present−past difference (B)."}
-print(fig_f0)
 ```
 
 # N-s2 anticipation models (duration, intensity, F0 mean)
