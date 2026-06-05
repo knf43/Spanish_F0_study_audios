@@ -1,0 +1,8 @@
+1_full_audios/
+2_cut_audios/
+fa_work/
+*.wav
+*.TextGrid
+report_objects.RData
+praat_output_3_words.txt
+.Rproj.user
